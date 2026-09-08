@@ -64,20 +64,20 @@ You can fork this repository to create your own working environment, track your 
 ### 使用方法
 
 #### 1. Fork 本仓库
-1. 打开仓库：[CS61C-Assignments](https://github.com/InsideEmpire/CS61C-Assignments)。
+1. 打开仓库：[CS61C-Assignments](https://github.com/InsideEmpire/CS61C-Assignment)。
 2. 点击页面右上角的 "Fork" 按钮，将仓库复制到您的 GitHub 账号下。
 
 #### 2. 克隆您 Fork 的仓库
 1. 打开终端或命令提示符。
 2. 将 Fork 后的仓库克隆到本地：
    ```bash
-   git clone https://github.com/<your-username>/CS61C-Assignments.git
+   git clone https://github.com/<your-username>/CS61C-Assignment.git
    ```
 
 #### 3. 开始完成作业
 1. 进入仓库目录：
    ```bash
-   cd CS61C-Assignments
+   cd CS61C-Assignment
    ```
 2. 选择您想完成的作业目录，例如 `hw01` 表示家庭作业 1：
    ```bash
