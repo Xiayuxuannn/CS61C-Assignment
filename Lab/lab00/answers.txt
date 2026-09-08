@@ -1,4 +1,7 @@
-1.
-2.
-3.
-4.
+1.grep -r "keyword" /path      //search for files whose content contains a keyword
+  grep -r "keyword"            //search inside current directory
+  find /path -name "*keyword*" //search for file name 
+2.ps aux                       
+  top                          //displays real-time, dynamically updating process info
+3.kill pid                     //pid: processID Which yuo first need to find using ps or top
+4.diff file1 file2
