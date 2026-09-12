@@ -1,9 +1,36 @@
-1.
-2.
-3.
-4.
-5.
-6.
-7.
-8.
-9.
+1.在 GDB 会话里给程序传参，用 set args 命令：
+  set args <a> <b> ... │ 设置运行参数（空格分隔），再 run 时生效
+  show args            │ 查看当前设置的参数
+  run <a> <b> ...      │ 也可以直接跟在 run 后面临时传参，不改变 set args 的设置
+  (gdb) set args hello world 123
+  (gdb) run
+2.用 break 命令（简写 b），后面跟位置：
+  (gdb) break main            # 在函数入口设断点
+  (gdb) b 12                  # 在当前文件的第 12 行
+  (gdb) b eccentric.c:12      # 指定文件的第 12 行
+  (gdb) b *(0x400123)         # 在某个内存地址（机器指令处）设断点 
+  delete <编号>                   删除指定断点（编号来自 info b） 
+  disable <编号> / enable <编号>  临时禁用 / 启用断点
+  clear <位置>                    按位置删除断点
+3.(gdb) next
+  它执行下一行 C 代码，如果这行有函数调用，会直接执行完整个函数（不进入函数内部），然后停到下一行。
+  s    单步执行一条 C 语句，遇到函数调用会进入函数内部                    
+  n    单步执行一条 C 语句，遇到函数调用跳过（不进入，直接执行完整个函数） 
+  si   单步执行一条机器指令（汇编级），会进入函数                         
+  ni   单步执行一条机器指令，跳过函数
+4.(gdb) step
+  finish 若想提前结束这个函数的调试
+5.break 停住 → 单步用 next/step → 继续跑用 continue（c）
+6.(gdb) print count
+  (gdb) p i
+  (gdb) p 1+2
+  (gdb) p *p          # 打印指针指向的值
+7.(gdb) display count
+  (gdb) display i
+  设置后，每次程序停下来（单步 next/step、遇到断点等），GDB 都会自动打印这些变量的当前值。 
+  display /x <变量>                               指定格式（如十六进制）
+  info display                                    列出所有自动显示的变量（带编号）
+  undisplay <编号>                                取消某个自动显示       
+  disable display <编号> / enable display <编号>   临时禁用 / 启用
+8.(gdb) info locals
+9.(gdb) quit
