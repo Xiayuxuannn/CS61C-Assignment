@@ -31,11 +31,14 @@ $(BIT_OPS_PROG): $(BIT_OPS_OBJS)
 $(LFSR_PROG): $(LFSR_OBJS)
 	$(CC) $(CFLAGS) -g -o $(LFSR_PROG) $(LFSR_OBJS) $(LDFLAGS)
 
+$(VECTOR_PROG): $(VECTOR_OBJS)
+	$(CC) $(CFLAGS) -g -o $(VECTOR_PROG) $(VECTOR_OBJS) $(LDFLAGS)
 lfsr.c: lfsr.h
 test_lfsr.c: lfsr.h
 
 bit_ops.c: bit_ops.h
 test_bit_ops.c: bit_ops.h
+
 
 .c.o:
 	$(CC) -c $(CFLAGS) $<
