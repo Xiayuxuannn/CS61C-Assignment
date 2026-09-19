@@ -25,7 +25,26 @@
 //Make sure that you close the file with fclose before returning.
 Image *readData(char *filename) 
 {
-	//YOUR CODE HERE
+	FILE *fp = fopen(filename, "r");
+	if (fp == NULL) return NULL;
+	char model[3] = {'P'};
+	uint32_t cols, rows, maxVal = 0;
+	fscanf(fp, "%s %u %u %u", model, &cols, &rows, &maxVal);
+	Image *image = malloc(sizeof(Image));
+	image->rows = rows;
+	image->cols = cols;
+	image->image = (Color **)malloc(rows * sizeof(Color*));
+	for (uint32_t i = 0; i < rows; i++){
+		image->image[i] = (Color *)malloc(cols * sizeof(Color));
+		for (uint32_t j = 0; j < cols; j++){
+			fscanf(fp, "%hhu %hhu %hhu", 
+				   &image->image[i][j].R,
+				   &image->image[i][j].G,
+				   &image->image[i][j].B);
+		}
+	}
+	fclose(fp);
+	return image;
 }
 
 //Given an image, prints to stdout (e.g. with printf) a .ppm P3 file with the image's data.
