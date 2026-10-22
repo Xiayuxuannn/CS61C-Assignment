@@ -3,75 +3,90 @@
 .text
 main:
     jal ra, create_default_list
-    add s0, a0, x0  # a0 = s0 is head of node list
+    add s0, a0, x0  # a0 = s0 是节点链表的头部
 
-    #print the list
+    # 打印链表
     add a0, s0, x0
     jal ra, print_list
 
-    # print a newline
+    # 打印换行符
     jal ra, print_newline
 
-    # load your args
-    add a0, s0, x0  # load the address of the first node into a0
+    # 加载你的参数
+    add a0, s0, x0  # 把第一个节点的地址加载到 a0
 
-    # load the address of the function in question into a1 (check out la on the green sheet)
+    # 把目标函数的地址加载到 a1（查看绿皮书上关于 la 的说明）
     ### YOUR CODE HERE ###
+    la a1, square
 
-    # issue the call to map
+    # 发起对 map 的调用
     jal ra, map
 
     # print the list
     add a0, s0, x0
     jal ra, print_list
 
-    # print another newline
+    # 再打印一个换行符
     jal ra, print_newline
 
     addi a0, x0, 10
-    ecall #Terminate the program
+    ecall # 终止程序
 
 map:
-    # Prologue: Make space on the stack and back-up registers
+    # 序言：在栈上分配空间并备份寄存器
     ### YOUR CODE HERE ###
+    addi sp, sp, -12
+    sw s0, 0(sp)
+    sw s1, 4(sp)
+    sw ra, 8(sp) 
 
-    beq a0, x0, done    # If we were given a null pointer (address 0), we're done.
+    beq a0, x0, done    # 如果传入的是空指针（地址 0），直接就完成了。
 
-    add s0, a0, x0  # Save address of this node in s0
-    add s1, a1, x0  # Save address of function in s1
+    add s0, a0, x0  # 将当前节点的地址保存到 s0
+    add s1, a1, x0  # 将函数的地址保存到 s1
 
-    # Remember that each node is 8 bytes long: 4 for the value followed by 4 for the pointer to next.
-    # What does this tell you about how you access the value and how you access the pointer to next?
+    # 记住每个节点长 8 字节：4 字节存值，后面 4 字节存指向下一个节点的指针。
+    # 这告诉你如何访问值、以及如何访问指向下一个节点的指针？
 
-    # load the value of the current node into a0
-    # THINK: why a0?
+    # 将当前节点的值加载到 a0
+    # 思考：为什么是 a0？
     ### YOUR CODE HERE ###
-
-    # Call the function in question on that value. DO NOT use a label (be prepared to answer why).
-    # What function? Recall the parameters of "map"
+    lw a0, 0(s0)
+    
+    # 对该值调用目标函数。不要使用 label（准备好回答为什么）。
+    # 是哪个函数？回想一下 "map" 的参数
     ### YOUR CODE HERE ###
+    jalr ra, s1, 0
 
-    # store the returned value back into the node
-    # Where can you assume the returned value is?
+    # 将返回值存回节点
+    # 你可以假设返回值在哪里？
     ### YOUR CODE HERE ###
+    sw a0, 0(s0)
 
-    # Load the address of the next node into a0
-    # The Address of the next node is an attribute of the current node.
-    # Think about how structs are organized in memory.
+    # 将下一个节点的地址加载到 a0
+    # 下一个节点的地址是当前节点的一个属性。
+    # 想一想结构体在内存中是如何组织的。
     ### YOUR CODE HERE ###
+    lw a0, 4(s0)
 
-    # Put the address of the function back into a1 to prepare for the recursion
-    # THINK: why a1? What about a0?
+    # 把函数的地址放回 a1，为递归做准备
+    # 思考：为什么是 a1？a0 呢？
     ### YOUR CODE HERE ###
+    add a1, s1, x0
 
-    # recurse
+    # 递归
     ### YOUR CODE HERE ###
+    jal ra, map
 
 done:
-    # Epilogue: Restore register values and free space from the stack
+    # 尾声：恢复寄存器值并释放栈空间
     ### YOUR CODE HERE ###
+    lw s0, 0(sp)
+    lw s1, 4(sp)
+    lw ra, 8(sp) 
+    addi sp, sp, 12
 
-    jr ra # Return to caller
+    jr ra # 返回调用者
 
 square:
     mul a0 ,a0, a0
@@ -82,17 +97,17 @@ create_default_list:
     sw  ra, 0(sp)
     sw  s0, 4(sp)
     sw  s1, 8(sp)
-    li  s0, 0       # pointer to the last node we handled
-    li  s1, 0       # number of nodes handled
-loop:   #do...
+    li  s0, 0       # 指向我们处理过的最后一个节点
+    li  s1, 0       # 已处理的节点数量
+loop:   # do...
     li  a0, 8
-    jal ra, malloc      # get memory for the next node
+    jal ra, malloc      # 为下一个节点申请内存
     sw  s1, 0(a0)   # node->value = i
     sw  s0, 4(a0)   # node->next = last
     add s0, a0, x0  # last = node
     addi    s1, s1, 1   # i++
     addi t0, x0, 10
-    bne s1, t0, loop    # ... while i!= 10
+    bne s1, t0, loop    # ... while i != 10
     lw  ra, 0(sp)
     lw  s0, 4(sp)
     lw  s1, 8(sp)
@@ -101,20 +116,20 @@ loop:   #do...
 
 print_list:
     bne a0, x0, printMeAndRecurse
-    jr ra       # nothing to print
+    jr ra       # 没有可打印的内容
 printMeAndRecurse:
-    add t0, a0, x0  # t0 gets current node address
-    lw  a1, 0(t0)   # a1 gets value in current node
-    addi a0, x0, 1      # prepare for print integer ecall
+    add t0, a0, x0  # t0 获取当前节点的地址
+    lw  a1, 0(t0)   # a1 获取当前节点的值
+    addi a0, x0, 1      # 为打印整数的 ecall 做准备
     ecall
-    addi    a1, x0, ' '     # a0 gets address of string containing space
-    addi    a0, x0, 11      # prepare for print string syscall
+    addi    a1, x0, ' '     # a0 获取包含空格的字符串的地址
+    addi    a0, x0, 11      # 为打印字符串的 syscall 做准备
     ecall
-    lw  a0, 4(t0)   # a0 gets address of next node
-    jal x0, print_list  # recurse. We don't have to use jal because we already have where we want to return to in ra
+    lw  a0, 4(t0)   # a0 获取下一个节点的地址
+    jal x0, print_list  # 递归。我们不必用 jal，因为 ra 里已经有我们想返回的地址了
 
 print_newline:
-    addi    a1, x0, '\n' # Load in ascii code for newline
+    addi    a1, x0, '\n' # 加载换行符的 ascii 码
     addi    a0, x0, 11
     ecall
     jr  ra
