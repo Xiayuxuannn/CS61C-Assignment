@@ -78,6 +78,11 @@ main:
 f:
     # YOUR CODE GOES HERE!
 
+    addi t0, a0, 3
+    slli t0, t0, 2
+    add t0, a1, t0
+    lw a0, 0(t0)
+
     jr ra               # Always remember to jr ra after your function!
 
 print_int:
