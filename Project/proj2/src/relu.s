@@ -13,26 +13,39 @@
 #   this function terminates the program with error code 78.
 # ==============================================================================
 relu:
-    # Prologue
+    
+    li t0, 1
+    blt a1, t0, error
 
+    # i = 0
+    li t0, 0
 
 loop_start:
     
+    bge t0, a1, loop_end
 
+    
+    slli t1, t0, 2
+    add t1, a0, t1
 
+    
+    lw t2, 0(t1)
 
-
-
-
+    
+    bge t2, x0, loop_continue
+    sw x0, 0(t1)
 
 loop_continue:
-
-
+    
+    addi t0, t0, 1
+    j loop_start
 
 loop_end:
 
+    ret
 
-    # Epilogue
+error:
 
-    
-	ret
+    li a0, 78
+    li a7, 93
+    ecall
